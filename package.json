@@ -1,0 +1,11 @@
+{
+  "name": "admin-panel",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "test": "nodemon -L app"
+  },
+  "author": "athulkrishnama",
+  "license": "ISC",
+  "description": ""
+}
