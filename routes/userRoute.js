@@ -17,5 +17,7 @@ const userController = require('../controllers/userController');
 
 user_route.get('/signup', userController.loadRegister);
 user_route.post('/signup', userController.insertUser);
+user_route.get('/login', userController.loadLogin);
+user_route.post('/login', userController.verifyUser);
 
 module.exports = user_route

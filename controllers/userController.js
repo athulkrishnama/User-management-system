@@ -19,6 +19,14 @@ const loadRegister = async(req, res)=>{
     }
 }
 
+const loadLogin = async(req, res)=>{
+    try{
+        res.render('login', {message:req.session.message})
+    }catch(err){
+        console.log(err)
+    }
+}
+
 const insertUser = async(req,res)=>{
     try{
         const  hashedPass = await securePassword(req.body.password)
@@ -46,7 +54,35 @@ const insertUser = async(req,res)=>{
     }
 }
 
+const verifyUser = async (req,res)=>{
+    try{
+        const email = req.body.email;
+        const password = req.body.password;
+        const userData = await User.findOne({email:email});
+
+        // checking if user exixts or not
+        if(userData){
+            if(await bcrypt.compare(password, userData.password)){
+                req.session.message = '';
+                req.session.username = userData.username;
+                req.session.email = userData.email;
+                res.redirect('/');
+            }else{
+                req.session.message = "password is not matching";
+                res.redirect('/login');
+            }
+        }else{
+            req.session.message = "User not found";
+            res.redirect('/login');
+        }
+    }catch(err){
+        console.log(err);
+    }
+}
+
 module.exports = {
     loadRegister,
-    insertUser
+    insertUser,
+    loadLogin,
+    verifyUser,
 }
