@@ -21,7 +21,7 @@ const loadRegister = async(req, res)=>{
 
 const loadLogin = async(req, res)=>{
     try{
-        res.render('login', {message:req.session.message})
+        res.render('login', {message:req.session.message, title:'Home Page'})
     }catch(err){
         console.log(err)
     }
@@ -31,7 +31,7 @@ const insertUser = async(req,res)=>{
     try{
         const  hashedPass = await securePassword(req.body.password)
         const user = new User({
-            name:req.body.name,
+            username:req.body.name,
             email:req.body.email,
             password:hashedPass,
             is_admin:0
@@ -39,7 +39,7 @@ const insertUser = async(req,res)=>{
         const userData = await user.save();
         if(userData){
             req.session.message = '';
-            req.session.username = userData.name;
+            req.session.username = userData.username;
             req.session.email = userData.email;
             res.redirect('/');
         }else{
@@ -47,9 +47,11 @@ const insertUser = async(req,res)=>{
             res.redirect('/signup')
         }
     }catch(error){
-        if(error.errorResponse.code == 11000){
+        if(error.errorResponse?.code == 11000){
             req.session.message = "This email is already registered";
             res.redirect('/signup');
+        }else{
+            console.log(error  )
         }
     }
 }
@@ -61,8 +63,10 @@ const verifyUser = async (req,res)=>{
         const userData = await User.findOne({email:email});
 
         // checking if user exixts or not
+        
         if(userData){
             if(await bcrypt.compare(password, userData.password)){
+                console.log("User authenticated")
                 req.session.message = '';
                 req.session.username = userData.username;
                 req.session.email = userData.email;
@@ -80,9 +84,26 @@ const verifyUser = async (req,res)=>{
     }
 }
 
+const loadHome = async(req,res)=>{
+    try{
+        const userData = await User.findOne({username:req.session.username});
+        if(userData){
+            res.render('home', {title:'Home', username:userData.username})
+        }
+    }catch(err){
+        console.log(err)
+    }
+}
+
+const logout = async(req,res)=>{
+    req.session.destroy();
+    res.redirect('/login')
+}
 module.exports = {
     loadRegister,
     insertUser,
     loadLogin,
     verifyUser,
+    loadHome,
+    logout
 }
