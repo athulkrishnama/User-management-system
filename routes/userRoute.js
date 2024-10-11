@@ -9,7 +9,8 @@ user_route.set('views','./views/users')
 user_route.use(express.urlencoded({extended:true}))
 
 user_route.use(session({
-    secret: 'your-secret-key', // Replace with a strong secret key
+    name:"user session",
+    secret: 'user', // Replace with a strong secret key
     resave: false, // Don't save the session if unmodified
     saveUninitialized: false // Don't create a session until something is stored
   }));
