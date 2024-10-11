@@ -1,0 +1,12 @@
+<%- include("../layouts/header.ejs")  %>
+<h1>Admin  Login </h1>
+<form action="" method="POST">
+    <p><%= message?? '' %></p>
+    <input type="email" name="email" placeholder="Enter Email"><br><br>
+    <input type="password" name="password" placeholder="Password"><br><br>
+    <input type="submit" value="Login">
+    <a href="/admin/login">Log In</a>
+</form>
+<% include("../layouts/footer.ejs") %>
+
+ 
