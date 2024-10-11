@@ -49,9 +49,9 @@ const insertUser = async(req,res)=>{
             res.redirect('/signup')
         }
     }catch(error){
-        if(error.errorResponse.code == 11000){
+        if(error.errorResponse?.code == 11000){
             req.session.user??={}
-            req.session.user.message = "This email is already registered";
+            req.session.user.message = "This email or username is already registered";
             res.redirect('/signup');
         }else{
             console.log(error  )
