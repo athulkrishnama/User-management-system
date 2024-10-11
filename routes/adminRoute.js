@@ -1,0 +1,29 @@
+const express = require('express');
+const admin_route = express();
+const session = require('express-session');
+const auth = require('../auth/auth')
+
+admin_route.set('view engine', 'ejs');
+admin_route.set('views','./views/admin')
+
+// controllers
+const adminController = require('../controllers/adminController')
+
+admin_route.use(express.urlencoded({extended:true}))
+
+admin_route.use(session({
+    name:"admin session",
+    secret: 'admin', // Replace with a strong secret key
+    resave: false, // Don't save the session if unmodified
+    saveUninitialized: false // Don't create a session until something is stored
+  }));
+
+  // admin home page
+  admin_route.get('/',auth.checkAdminLogout, adminController.loadHome)
+
+  // admin login page
+  admin_route.get('/login',auth.checkAdminLogin, adminController.loadLogin)
+  admin_route.post('/login', adminController.verifyLogin)
+
+
+  module.exports = admin_route;
