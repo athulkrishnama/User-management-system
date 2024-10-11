@@ -25,5 +25,11 @@ admin_route.use(session({
   admin_route.get('/login',auth.checkAdminLogin, adminController.loadLogin)
   admin_route.post('/login', adminController.verifyLogin)
 
+  admin_route.get('/logout', adminController.logout);
+
+  // user editing routes
+
+  admin_route.get('/editUser/:id', auth.checkAdminLogout, adminController.loadEditUser);
+  admin_route.post('/editUser/:id', auth.checkAdminLogout, adminController.editUser);
 
   module.exports = admin_route;

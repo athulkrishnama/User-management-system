@@ -1,0 +1,13 @@
+<%- include("../layouts/header.ejs") %>
+<h1>Edit <%= userData.username %></h1>
+<form action="/admin/editUser/<%=userData._id%>" method="POST">
+    <label for="">Username</label>
+    <input type="text" name="username" value="<%=userData.username%>"><br>
+    <label for="">Email</label>
+    <input type="text" name="email" value="<%=userData.email%>"><br>
+    <label for="">Password</label>
+    <input type="text" name="password" value="<%=userData.password%>"><br>
+    <input type="submit" value="Update">
+    <h3><%= error %></h3>
+</form>
+<%- include("../layouts/header.ejs") %>
