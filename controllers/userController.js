@@ -13,7 +13,7 @@ const securePassword = async(password)=>{
 
 const loadRegister = async(req, res)=>{
     try{
-        res.render('signup',{message:req.session.message});
+        res.render('signup',{message:req.session.user?.message});
     }catch(error){
         console.log(error.message);
     }
@@ -21,7 +21,7 @@ const loadRegister = async(req, res)=>{
 
 const loadLogin = async(req, res)=>{
     try{
-        res.render('login', {message:req.session.message, title:'Home Page'})
+        res.render('login', {message:req.session.user?.message, title:'Home Page'})
     }catch(err){
         console.log(err)
     }
@@ -38,17 +38,20 @@ const insertUser = async(req,res)=>{
         })
         const userData = await user.save();
         if(userData){
-            req.session.message = '';
-            req.session.username = userData.username;
-            req.session.email = userData.email;
+            req.session.user??={}
+            req.session.user.message = '';
+            req.session.user.username = userData.username;
+            req.session.user.email = userData.email;
             res.redirect('/');
         }else{
-            req.session.message = "unable to register user";
+            req.session.user??={}
+            req.session.user.message = "unable to register user";
             res.redirect('/signup')
         }
     }catch(error){
-        if(error.errorResponse?.code == 11000){
-            req.session.message = "This email is already registered";
+        if(error.errorResponse.code == 11000){
+            req.session.user??={}
+            req.session.user.message = "This email is already registered";
             res.redirect('/signup');
         }else{
             console.log(error  )
@@ -66,17 +69,19 @@ const verifyUser = async (req,res)=>{
         
         if(userData){
             if(await bcrypt.compare(password, userData.password)){
-                console.log("User authenticated")
-                req.session.message = '';
-                req.session.username = userData.username;
-                req.session.email = userData.email;
+                req.session.user ??= {}
+                req.session.user.message = '';
+                req.session.user.username = userData.username;
+                req.session.user.email = userData.email;
                 res.redirect('/');
             }else{
-                req.session.message = "password is not matching";
+                req.session.user ??= {}
+                req.session.user.message = "password is not matching";
                 res.redirect('/login');
             }
         }else{
-            req.session.message = "User not found";
+            req.session.user ??= {}
+            req.session.user.message = "User not found";
             res.redirect('/login');
         }
     }catch(err){
@@ -86,7 +91,7 @@ const verifyUser = async (req,res)=>{
 
 const loadHome = async(req,res)=>{
     try{
-        const userData = await User.findOne({username:req.session.username});
+        const userData = await User.findOne({username:req.session.user?.username});
         if(userData){
             res.render('home', {title:'Home', username:userData.username})
         }
@@ -96,7 +101,7 @@ const loadHome = async(req,res)=>{
 }
 
 const logout = async(req,res)=>{
-    req.session.destroy();
+    req.session.user = null;
     res.redirect('/login')
 }
 module.exports = {
