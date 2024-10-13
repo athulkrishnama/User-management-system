@@ -1,0 +1,8 @@
+<%- include('../layouts/header.ejs') %>
+<form action="/update" method="POST">
+    <input type="text" name="email" value="<%= data.email %>"><br>
+    <input type="text" name="username" value="<%= data.username %>"><br>
+    <input type="text" name="password"><br>
+    <input type="submit" value="update">
+</form>
+<%- include('../layouts/footer.ejs') %>

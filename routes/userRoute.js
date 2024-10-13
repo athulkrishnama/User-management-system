@@ -30,4 +30,8 @@ user_route.post('/login', userController.verifyUser);
 // logout route to destroy session
 user_route.get('/logout',userController.logout)
 
+// update user route
+user_route.get('/update', auth.checkLogout, userController.loadUpdateUser);
+user_route.post('/update', auth.checkLogout, userController.updateUser)
+
 module.exports = user_route
