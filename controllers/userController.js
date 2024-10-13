@@ -13,7 +13,7 @@ const securePassword = async (password) => {
 
 const loadRegister = async (req, res) => {
     try {
-        res.render('signup', { message: req.session.user?.message });
+        res.render('signup', { message: req.session.user?.message , title:"Sign Up"});
     } catch (error) {
         console.log(error.message);
     }
