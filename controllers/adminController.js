@@ -89,11 +89,22 @@ const editUser = async (req, res) => {
         }
     }
 }
+
+const deleteUser = async(req,res)=>{
+    try{
+        const id = req.params.id;
+        const result = await User.deleteOne({_id:id});
+        res.redirect('/admin');
+    }catch(err){
+        console.log(err)
+    }
+}
 module.exports = {
     loadLogin,
     verifyLogin,
     loadHome,
     logout,
     loadEditUser,
-    editUser
+    editUser,
+    deleteUser
 }

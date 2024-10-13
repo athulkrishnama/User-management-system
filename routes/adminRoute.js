@@ -32,4 +32,7 @@ admin_route.use(session({
   admin_route.get('/editUser/:id', auth.checkAdminLogout, adminController.loadEditUser);
   admin_route.post('/editUser/:id', auth.checkAdminLogout, adminController.editUser);
 
+  // delete user
+  admin_route.get('/delete/:id', auth.checkAdminLogout,adminController.deleteUser)
+
   module.exports = admin_route;
