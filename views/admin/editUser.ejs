@@ -1,5 +1,5 @@
 <%- include("../layouts/header.ejs") %>
-<h1>Edit <%= userData.username %></h1>
+    <!-- <h1>Edit <%= userData.username %></h1>
 <form action="/admin/editUser/<%=userData._id%>" method="POST">
     <label for="">Username</label>
     <input type="text" name="username" value="<%=userData.username%>"><br>
@@ -9,5 +9,62 @@
     <input type="text" name="password" value="<%=userData.password%>"><br>
     <input type="submit" value="Update">
     <h3><%= error %></h3>
-</form>
-<%- include("../layouts/header.ejs") %>
+</form> -->
+    <div class="container login">
+        <form action="/admin/editUser/<%=userData._id%>" method="POST" class="loginForm" id="form">
+            <h1>Edit <%= userData.username %>'s data</h1>
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control " id="email" name="email" placeholder="Enter Your Email"
+                    value="<%=userData.email%>">
+                <label for="floatingInput">Email</label>
+                <div id="emailFeedback"></div>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control " id="username" name="name" placeholder="Enter Your Username"
+                    value="<%=userData.username%>">
+                <label for="floatingInput">Username</label>
+                <div id="usernameFeedback"></div>
+            </div>
+            <button type="submit" class="btn btn-primary">Update</button>
+        </form>
+    </div>
+    <script>
+        const validate_form = () => {
+            let valid = true;
+            const username = document.getElementById('username');
+            const email = document.getElementById('email');
+
+            // error fields;
+            const username_feedback = document.getElementById('usernameFeedback');
+            const email_feedback = document.getElementById('emailFeedback');
+
+            // checking if username length less than 4
+            if (username.value.length < 4) {
+                username.classList.add('is-invalid')
+                username_feedback.innerHTML = "Username must be 4 letter long"
+                username_feedback.classList.add('invalid-feedback')
+                valid = false
+            } else {
+                username.classList.remove('is-invalid');
+            }
+
+            // checking if email is valid
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+                email.classList.add('is-invalid')
+                email_feedback.innerHTML = "Invalid email"
+                email_feedback.classList.add('invalid-feedback')
+                valid = false
+            } else {
+                email.classList.remove('is-invalid');
+            }
+            return valid;
+        }
+        const form = document.getElementById('form');
+        form.addEventListener('submit', (event) => {
+            if (!validate_form()) {
+                event.preventDefault()
+            }
+            form.addEventListener('keyup', validate_form);
+        })
+    </script>
+    <%- include("../layouts/header.ejs") %>
