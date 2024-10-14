@@ -13,7 +13,7 @@ const securePassword = async (password) => {
 
 const loadRegister = async (req, res) => {
     try {
-        res.render('signup', { message: req.session.user?.message , title:"Sign Up"});
+        res.render('signup', { message: req.session.user?.signupMessage , title:"Sign Up"});
     } catch (error) {
         console.log(error.message);
     }
@@ -39,19 +39,19 @@ const insertUser = async (req, res) => {
         const userData = await user.save();
         if (userData) {
             req.session.user ??= {}
-            req.session.user.message = '';
+            req.session.user.signupMessage = '';
             req.session.user.username = userData.username;
             req.session.user.email = userData.email;
             res.redirect('/');
         } else {
             req.session.user ??= {}
-            req.session.user.message = "unable to register user";
+            req.session.user.signupMessage = "unable to register user";
             res.redirect('/signup')
         }
     } catch (error) {
         if (error.errorResponse?.code == 11000) {
             req.session.user ??= {}
-            req.session.user.message = "This email or username is already registered";
+            req.session.user.signupMessage = "This email or username is already registered";
             res.redirect('/signup');
         } else {
             console.log(error)
