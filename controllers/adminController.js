@@ -58,6 +58,7 @@ const loadHome = async (req, res) => {
 const logout = async (req, res) => {
     try {
         req.session.admin = null;
+        res.redirect('/admin/login')
     } catch (err) {
         console.log(err)
     }
