@@ -48,7 +48,14 @@ const loadHome = async (req, res) => {
     try {
         const email = req.session.admin?.email;
         const adminData = await User.findOne({ email });
-        const userDetails = await User.find({ is_admin: 0 });
+        let userDetails;
+        const searchTerm = req.query.query;
+        const regex = new RegExp(searchTerm);
+        if (searchTerm) {
+            userDetails = await User.find({$or:[{email:{$regex:regex}}, {username:{$regex:regex}}], is_admin:0})
+        } else {
+            userDetails = await User.find({ is_admin: 0 });
+        }
         res.render('home', { title: "Admin DashBoard", userDetails })
     } catch (err) {
         console.log(err)
@@ -67,7 +74,7 @@ const logout = async (req, res) => {
 const loadEditUser = async (req, res) => {
     try {
         const userData = await User.findOne({ _id: req.params.id });
-        res.render('editUser', { userData , error:req.query.err??''})
+        res.render('editUser', { userData, error: req.query.err ?? '' })
     } catch (err) {
         console.log(err)
     }
@@ -83,28 +90,28 @@ const editUser = async (req, res) => {
         const userData = await User.updateOne({ _id: req.params.id }, user);
         res.redirect('/admin')
     } catch (err) {
-        if (err.errorResponse?.code == 11000){
-            res.redirect('/admin/editUser/'+req.params.id+"/?err=duplicate")
-        }else{
+        if (err.errorResponse?.code == 11000) {
+            res.redirect('/admin/editUser/' + req.params.id + "/?err=duplicate")
+        } else {
             console.log(err)
         }
     }
 }
 
-const deleteUser = async(req,res)=>{
-    try{
+const deleteUser = async (req, res) => {
+    try {
         const id = req.params.id;
-        const result = await User.deleteOne({_id:id});
+        const result = await User.deleteOne({ _id: id });
         res.redirect('/admin');
-    }catch(err){
+    } catch (err) {
         console.log(err)
     }
 }
 
-const loadAddUser = async(req,res)=>{
-    try{
-        res.render('addUser', {title:'Add User', message:''});
-    }catch(err){
+const loadAddUser = async (req, res) => {
+    try {
+        res.render('addUser', { title: 'Add User', message: '' });
+    } catch (err) {
         console.log(err)
     }
 }
@@ -120,7 +127,7 @@ const securePassword = async (password) => {
     }
 }
 
-const addUser = async(req,res)=>{
+const addUser = async (req, res) => {
     try {
         const hashedPass = await securePassword(req.body.password)
         const user = new User({
@@ -133,11 +140,11 @@ const addUser = async(req,res)=>{
         if (userData) {
             res.redirect('/admin');
         } else {
-            res.render('addUser', {title:'Add User', message:'Cannot add user to database'})
+            res.render('addUser', { title: 'Add User', message: 'Cannot add user to database' })
         }
     } catch (error) {
         if (error.errorResponse?.code == 11000) {
-            res.render('addUser', {title:'Add User', message:'Username or Email already Exists'});
+            res.render('addUser', { title: 'Add User', message: 'Username or Email already Exists' });
         } else {
             console.log(error)
         }

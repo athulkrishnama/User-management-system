@@ -3,6 +3,10 @@
         <h1 class="my-5 text-center">Dashboard</h1>
         <div class="d-flex justify-content-between">
             <a href="/admin/logout" class="btn btn-danger">Logout</a>
+            <form action="/admin" method="GET" class="search d-flex gx-5">
+                <input type="text" class="form-control" name="query">
+                <input type="submit" value="Search" class="btn btn-outline-success">
+            </form>
             <a href="/admin/add-user" class="btn btn-primary">Add User</a>
         </div>
         <table class="table table-striped table-light mt-5">
