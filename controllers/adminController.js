@@ -100,6 +100,49 @@ const deleteUser = async(req,res)=>{
         console.log(err)
     }
 }
+
+const loadAddUser = async(req,res)=>{
+    try{
+        res.render('addUser', {title:'Add User', message:''});
+    }catch(err){
+        console.log(err)
+    }
+}
+
+
+const securePassword = async (password) => {
+    try {
+        // console.log(password)
+        const hashedPass = await bcrypt.hash(password, 10);
+        return hashedPass;
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+const addUser = async(req,res)=>{
+    try {
+        const hashedPass = await securePassword(req.body.password)
+        const user = new User({
+            username: req.body.name,
+            email: req.body.email,
+            password: hashedPass,
+            is_admin: 0
+        })
+        const userData = await user.save();
+        if (userData) {
+            res.redirect('/admin');
+        } else {
+            res.render('addUser', {title:'Add User', message:'Cannot add user to database'})
+        }
+    } catch (error) {
+        if (error.errorResponse?.code == 11000) {
+            res.render('addUser', {title:'Add User', message:'Username or Email already Exists'});
+        } else {
+            console.log(error)
+        }
+    }
+}
 module.exports = {
     loadLogin,
     verifyLogin,
@@ -107,5 +150,7 @@ module.exports = {
     logout,
     loadEditUser,
     editUser,
-    deleteUser
+    deleteUser,
+    loadAddUser,
+    addUser
 }

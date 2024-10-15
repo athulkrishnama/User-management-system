@@ -35,4 +35,8 @@ admin_route.use(session({
   // delete user
   admin_route.get('/delete/:id', auth.checkAdminLogout,adminController.deleteUser)
 
+  // update user route
+  admin_route.get('/add-user', auth.checkAdminLogout, adminController.loadAddUser)
+  admin_route.post('/add-user', auth.checkAdminLogout, adminController.addUser)
+
   module.exports = admin_route;
